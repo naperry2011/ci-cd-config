@@ -7,7 +7,7 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-                git 'https://github.com/<your-username>/<repository-name>.git'
+                git 'https://github.com/naperry2011/ci-cd-config.git'
             }
         }
         stage('Build Docker Image') {
