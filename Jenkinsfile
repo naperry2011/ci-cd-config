@@ -1,19 +1,46 @@
 pipeline {
     agent any
+    environment {
+        DOCKER_REPO = 'perry2011.jfrog.io/docker-repo'
+        JFROG_CREDENTIALS = 'jfrog-credentials-id'
+    }
     stages {
+        stage('Checkout Code') {
+            steps {
+                git 'https://github.com/<your-username>/<repository-name>.git'
+            }
+        }
         stage('Build Docker Image') {
             steps {
                 script {
-                    docker.build('myapp-image').push('latest')
+                    dockerImage = docker.build("${DOCKER_REPO}/my-python-app:latest")
+                }
+            }
+        }
+        stage('Push Docker Image to JFrog') {
+            steps {
+                script {
+                    docker.withRegistry('https://perry2011.jfrog.io', JFROG_CREDENTIALS) {
+                        dockerImage.push('latest')
+                    }
                 }
             }
         }
         stage('Deploy with ArgoCD') {
             steps {
                 script {
-                    // Trigger ArgoCD sync here
+                    sh '''
+                    argocd app sync <your-argocd-app-name> \
+                    --auth-token $(argocd account get-token --server <argocd-server-url>) \
+                    --server <argocd-server-url>
+                    '''
                 }
             }
+        }
+    }
+    post {
+        always {
+            cleanWs()
         }
     }
 }
