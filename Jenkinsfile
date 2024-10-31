@@ -10,10 +10,8 @@ pipeline {
         
         stage('Build Docker Image') {
             steps {
-                script {
-                    // Build the Docker image and tag it as 'my-python-app'
-                    docker.build('my-python-app')
-                }
+                // Build the Docker image and tag it as 'my-python-app'
+                sh 'docker build -t my-python-app .'
             }
         }
         
