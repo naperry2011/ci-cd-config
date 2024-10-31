@@ -1,20 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: python-app
-  namespace: default
+  name: my-python-app
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: python-app
+      app: my-python-app
   template:
     metadata:
       labels:
-        app: python-app
+        app: my-python-app
     spec:
       containers:
-        - name: python-app
-          image: jfrog-url/python-app:latest
+        - name: my-python-app
+          image: <jfrog-artifactory-url>/my-python-app:latest
           ports:
-            - containerPort: 5000
+            - containerPort: 5000  # Change as per your app requirements
