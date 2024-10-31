@@ -2,7 +2,7 @@ pipeline {
     agent any
     environment {
         // Set the Argo CD server address
-        ARGOCD_SERVER = '192.168.0.115:32095'  // Update this to your Argo CD server
+        ARGOCD_SERVER = 'localhost'  // Update this to your Argo CD server
     }
     stages {
         stage('Check Docker') {
