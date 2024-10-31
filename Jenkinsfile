@@ -17,13 +17,15 @@ pipeline {
         
         stage('Push to Artifactory') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'artifactory-credentials', usernameVariable: 'JFROG_USER', passwordVariable: 'JFROG_PASSWORD')]) {
-                    // Log into JFrog Artifactory
-                    sh 'docker login -u $JFROG_USER -p $JFROG_PASSWORD https://perry2011.jfrog.io/artifactory'
+                withCredentials([string(credentialsId: 'artifactory-token', variable: 'JFROG_TOKEN')]) {
+                    // Log into JFrog Artifactory using the Identity Token
+                    sh '''
+                        echo $JFROG_TOKEN | docker login perry2011.jfrog.io -u nuperry2011@gmail.com --password-stdin
+                    '''
                     
                     // Tag and push the image to JFrog Artifactory
-                    sh 'docker tag my-python-app:latest perry2011.jfrog.io/artifactory/docker-repo/my-python-app:latest'
-                    sh 'docker push perry2011.jfrog.io/artifactory/docker-repo/my-python-app:latest'
+                    sh 'docker tag my-python-app:latest perry2011.jfrog.io/docker-repo/my-python-app:latest'
+                    sh 'docker push perry2011.jfrog.io/docker-repo/my-python-app:latest'
                 }
             }
         }
