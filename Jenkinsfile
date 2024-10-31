@@ -1,5 +1,9 @@
 pipeline {
     agent any
+    environment {
+        // Set the Argo CD server address
+        ARGOCD_SERVER = '192.168.0.115:32095'  // Update this to your Argo CD server
+    }
     stages {
         stage('Check Docker') {
             steps {
@@ -32,8 +36,13 @@ pipeline {
         
         stage('Deploy with ArgoCD') {
             steps {
-                // Trigger an ArgoCD sync to deploy the updated image
-                sh 'argocd app sync my-python-app'
+                withCredentials([usernamePassword(credentialsId: 'argocd-credentials', usernameVariable: 'ARGOCD_USER', passwordVariable: 'ARGOCD_PASSWORD')]) {
+                    // Login to ArgoCD and sync the application
+                    sh '''
+                        argocd login $ARGOCD_SERVER --username $ARGOCD_USER --password $ARGOCD_PASSWORD --insecure
+                        argocd app sync my-python-app --server $ARGOCD_SERVER
+                    '''
+                }
             }
         }
     }
