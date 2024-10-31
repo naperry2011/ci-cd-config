@@ -11,8 +11,8 @@ pipeline {
         stage('Push to Artifactory') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'artifactory-credentials', usernameVariable: 'ARTIFACTORY_USER', passwordVariable: 'ARTIFACTORY_PASSWORD')]) {
-                    sh 'docker login -u $ARTIFACTORY_USER -p $ARTIFACTORY_PASSWORD <jfrog-artifactory-url>'
-                    sh 'docker push <jfrog-artifactory-url>/my-python-app:latest'
+                    sh 'docker login -u $ARTIFACTORY_USER -p $ARTIFACTORY_PASSWORD https://perry2011.jfrog.io/artifactory'
+                    sh 'docker push perry2011.jfrog.io/artifactory/docker-repo/my-python-app:latest'
                 }
             }
         }
